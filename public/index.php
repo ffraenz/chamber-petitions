@@ -262,7 +262,7 @@ function fetchPetitionWithUrl($url, $fetchDetail = false)
   }
 
   $reclassifiedId = null;
-  if ($status === 'reclassified') {
+  if ($raw['status'] === 'Recevable (reclassée: seuil non atteint)') {
     // check for link to original petition
     $anchorNodes = $detailNode->find('.panel_div a');
     if (count($anchorNodes) > 0) {
