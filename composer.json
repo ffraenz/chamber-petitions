@@ -1,0 +1,12 @@
+{
+  "name": "petitions",
+  "authors": [
+    {
+      "name": "Fränz Friederes",
+      "email": "fraenz@frieder.es"
+    }
+  ],
+  "require": {
+    "paquettg/php-html-parser": "^1.7"
+  }
+}

@@ -1,0 +1,18 @@
+---
+  version: "2"
+
+  services:
+    petitionsweb:
+      container_name: petitions-web
+      build: "."
+      image: petitions-web:latest
+      volumes:
+        - .:/var/www/html
+      ports:
+        - "80:80"
+    petitionscache:
+      container_name: petitions-cache
+      image: memcached:latest
+  volumes:
+    database:
+      driver: local

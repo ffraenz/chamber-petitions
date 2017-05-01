@@ -1,0 +1,4 @@
+
+/var/www/html/config
+/var/www/html/data
+/var/www/html/public
