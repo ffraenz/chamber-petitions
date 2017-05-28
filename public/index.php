@@ -25,6 +25,7 @@ $config = [
   'chamberToken' => 'nZBBDoIwEEXPwgk6bXGAJVBtC0ERKWA3hhUhUXRhPL-GuNBNJc7uJ-_9TD6xpCN26h_j0N_H69SfX_lo8VTSIlRpCAVQEULM6wbToqYASNoZoHoVKw1MwQYRdKlEhLnPc0mJXeLD18WQVCzhAHLH_vE_m5b5DsC661tiZ8S1wAwIJppK-wxksPeBZessMIctlxG-AdcGv764XYwxHYx68LwnDjWFBg!!/p0/IZ7_P1M8HC80M01D80A3TV6CMT10G5=CZ6_P1M8HC80M01D80A3TV6CMT1006',
   'petitionsPageUrl' => 'http://chamber.lu/wps/portal/public/Accueil/TravailALaChambre/Petitions/RoleDesPetitions/!ut/p/z1/%s=MEePetition!listPetitionRole==/?pageNumber=%d',
   'petitionUrl' => 'http://chamber.lu/wps/portal/public/Accueil/TravailALaChambre/Petitions/RoleDesPetitions?action=doPetitionDetail&id=%d',
+  'petitionForumUrl' => 'http://chamber.lu/wps/portal/public/Accueil/TravailALaChambre/Petitions/ParticiperForums?action=doPetitionForum&id=%d',
   'petitionSignaturePageUrl' => 'http://chamber.lu/wps/portal/public/Accueil/TravailALaChambre/Petitions/RoleDesPetitions/!ut/p/z1/%s=MEpetition_id!%d=ePetition!PetitionSignatureList==/?sortDirection=ASC&pageNumber=%d',
   'postCodeCantonFilename' => __DIR__ . '/../data/post-code-canton/post-code-canton.json',
   'exportJsonFilename' => __DIR__ . '/../data/petitions.json',
@@ -67,6 +68,7 @@ if (isset($_GET['id'])) {
     'signatures'            => 'Signatures',
     'signaturesElectronic'  => 'Signatures (electronic)',
     'signaturesPaper'       => 'Signatures (paper)',
+    'forumPostCount'        => 'Forum Posts',
   ];
 
   $exportCSVFile = fopen($config['exportCSVFilename'], 'w');
@@ -271,6 +273,20 @@ function fetchPetitionWithUrl($url, $fetchDetail = false)
     }
   }
 
+  // retrieve forum posts
+  // forum is only available for public petitions
+  $formPostCount = null;
+  if ($type === 'public') {
+    try {
+      $forumUrl = sprintf($config['petitionForumUrl'], $id);
+      $forumDocument = fetchDocument($forumUrl);
+
+      $messageNodes = $forumDocument->find('#ForumContainer .MessageItem ');
+      $formPostCount = $messageNodes ? count($messageNodes) : 0;
+    } catch (Exception $e) {
+    }
+  }
+
   unset($document);
 
   // interpret signatures
@@ -323,6 +339,7 @@ function fetchPetitionWithUrl($url, $fetchDetail = false)
     'signaturesElectronic' => $signaturesElectronic,
     'signaturesPaper' => $signaturesPaper,
     'signatureMap' => $signatureMap,
+    'forumPostCount' => $formPostCount,
     'url' => $url,
   ];
 
